@@ -1,0 +1,416 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0a0e1a; --panel: #0d1526; --border: #1a3a5c;
+  --green: #00ff88; --green-dim: #003322; --green-dark: #4a8a6a;
+  --blue: #4a8aff; --amber: #ffaa00; --red: #ff4444;
+  --text: #a0c8a0; --muted: #3a5a4a;
+}
+body { background: var(--bg); color: var(--green); font-family: 'Courier New', monospace; }
+.sp-wrap { padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+
+.header { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
+.logo-row { display: flex; align-items: center; gap: 10px; }
+.logo-box { width: 34px; height: 34px; background: var(--green); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; color: #0a0e1a; }
+.logo-title { font-size: 15px; font-weight: 700; letter-spacing: 2px; color: var(--green); }
+.logo-sub { font-size: 10px; color: var(--green-dark); letter-spacing: 1px; }
+.header-right { display: flex; align-items: center; gap: 14px; font-size: 11px; color: var(--green-dark); }
+.pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; margin-right: 4px; animation: blink 1.5s infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:.3} }
+.btn { font-family: 'Courier New', monospace; font-size: 11px; padding: 5px 14px; border-radius: 4px; border: 1px solid var(--green); background: transparent; color: var(--green); cursor: pointer; letter-spacing: 1px; transition: background .15s; }
+.btn:hover:not(:disabled) { background: var(--green-dim); }
+.btn:disabled { border-color: var(--muted); color: var(--muted); cursor: not-allowed; }
+.btn-red { border-color: var(--red); color: var(--red); }
+.btn-red:hover:not(:disabled) { background: #1a0000; }
+
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.stat { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
+.stat-n { font-size: 24px; font-weight: 700; }
+.stat-l { font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-top: 3px; }
+
+.section { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.sec-head { background: #0a1220; border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; gap: 10px; }
+.sec-title { font-size: 11px; color: var(--green); letter-spacing: 2px; font-weight: 700; text-transform: uppercase; }
+.badge { font-size: 9px; padding: 2px 7px; border-radius: 3px; background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+.badge-red { background: #1a0000; color: var(--red); border-color: var(--red); }
+.badge-amber { background: #1a1000; color: var(--amber); border-color: var(--amber); }
+.sec-body { padding: 14px; }
+
+.port-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(28px, 1fr)); gap: 2px; }
+.pc { width: 100%; aspect-ratio: 1; border-radius: 2px; background: #0a1220; border: 1px solid #0f2030; font-size: 7px; display: flex; align-items: center; justify-content: center; color: #1a3a2a; transition: all .15s; }
+.pc.scanning { background: #001a3a; border-color: var(--blue); color: var(--blue); }
+.pc.open { background: #002a14; border-color: var(--green); color: var(--green); }
+.pc.trap { background: #2a1400; border-color: var(--amber); color: var(--amber); }
+.pc.hit { background: #2a0000; border-color: var(--red); color: var(--red); animation: flash .6s infinite; }
+@keyframes flash { 0%,100%{opacity:1}50%{opacity:.4} }
+
+.legend { display: flex; gap: 14px; padding: 10px 14px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.li { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--muted); }
+.ld { width: 10px; height: 10px; border-radius: 2px; }
+
+.terminal { font-size: 11px; line-height: 1.9; min-height: 120px; max-height: 200px; overflow-y: auto; }
+.t-cmd { color: var(--green); }
+.t-info { color: var(--blue); }
+.t-warn { color: var(--amber); }
+.t-danger { color: var(--red); }
+.t-muted { color: var(--muted); }
+
+.nmap-table { width: 100%; border-collapse: collapse; font-size: 12px; line-height: 2; }
+.nmap-table th { color: var(--muted); font-size: 10px; letter-spacing: 1px; text-align: left; padding: 4px 8px; border-bottom: 1px solid var(--border); font-weight: 400; }
+.nmap-table td { padding: 5px 8px; border-bottom: 1px solid #0d1e14; }
+.nmap-table tr:last-child td { border-bottom: none; }
+.col-port { color: var(--blue); }
+.col-state { color: var(--green); }
+.col-svc { color: var(--amber); }
+.col-ver { color: #6a8a7a; font-size: 11px; }
+
+.atk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.atk-half { padding: 14px; }
+.atk-half:first-child { border-right: 1px solid var(--border); }
+.atk-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-bottom: 10px; }
+
+.cred-block { background: #080f0a; border: 1px solid var(--border); border-radius: 6px; padding: 12px; }
+.cred-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.cred-lbl { font-size: 11px; color: var(--muted); min-width: 72px; }
+.cred-val { font-size: 11px; color: var(--green); background: #0a1a0f; padding: 4px 10px; border-radius: 4px; border: 1px solid #1a4a2a; flex: 1; min-width: 0; word-break: break-all; }
+.cred-val.active { border-color: var(--green); }
+.cred-status { font-size: 11px; margin-top: 6px; padding: 6px 10px; border-radius: 4px; }
+.cred-fail { background: #1a0000; color: var(--red); border: 1px solid #440000; }
+.cred-trying { background: #1a1000; color: var(--amber); border: 1px solid #442200; }
+
+.capture-box { margin-top: 12px; background: #1a0000; border: 1px solid var(--red); border-radius: 8px; padding: 16px; text-align: center; }
+.capture-label { font-size: 10px; color: #aa4444; letter-spacing: 2px; margin-bottom: 6px; }
+.capture-ip { font-size: 22px; color: var(--red); font-weight: 700; letter-spacing: 3px; animation: blink 1s infinite; }
+.capture-sub { font-size: 10px; color: #664444; margin-top: 6px; letter-spacing: 1px; }
+
+.alert-list { min-height: 80px; }
+.alert-row { display: grid; grid-template-columns: 70px 80px 90px 110px 1fr; gap: 10px; align-items: center; padding: 10px 14px; border-bottom: 1px solid #0d1e14; font-size: 11px; border-left: 3px solid var(--red); background: #0e0808; }
+.alert-row:last-child { border-bottom: none; }
+.a-time { color: var(--muted); font-size: 10px; }
+.a-ip { color: var(--red); font-weight: 700; }
+.a-port { color: var(--amber); }
+.a-svc { color: var(--blue); }
+.a-payload { color: var(--text); font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.alert-head { display: grid; grid-template-columns: 70px 80px 90px 110px 1fr; gap: 10px; padding: 6px 14px; border-bottom: 1px solid var(--border); font-size: 10px; color: var(--muted); letter-spacing: 1px; background: #0a1220; }
+.empty-state { padding: 24px; text-align: center; font-size: 11px; color: var(--muted); }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+
+<div class="sp-wrap">
+
+<div class="header">
+  <div class="logo-row">
+    <div class="logo-box">SP</div>
+    <div>
+      <div class="logo-title">SECUREPULSE EDR</div>
+      <div class="logo-sub">MIRAGE ENGINE v2.0 — HONEYPOT DEFENSE SYSTEM</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span><span class="pulse"></span>MIRAGE ACTIVE</span>
+    <span>HOST: 192.168.1.100</span>
+    <span id="clock">--:--:--</span>
+    <button class="btn" id="main-btn" onclick="startDemo()">[ INIT SCAN ]</button>
+  </div>
+</div>
+
+<div class="stats-row">
+  <div class="stat"><div class="stat-n" id="s-scanned">0</div><div class="stat-l">PORTS SCANNED</div></div>
+  <div class="stat"><div class="stat-n" style="color:var(--blue)" id="s-open">0</div><div class="stat-l">REAL OPEN PORTS</div></div>
+  <div class="stat"><div class="stat-n" style="color:var(--amber)" id="s-traps">0</div><div class="stat-l">TRAPS DEPLOYED</div></div>
+  <div class="stat"><div class="stat-n" style="color:var(--red)" id="s-alerts">0</div><div class="stat-l">INTRUSIONS CAUGHT</div></div>
+</div>
+
+<div class="section">
+  <div class="sec-head">
+    <span class="sec-title">Port Scanner + Mirage Engine</span>
+    <span class="badge" id="scan-badge">IDLE</span>
+    <span style="margin-left:auto;font-size:10px;color:var(--muted)" id="scan-note">Click INIT SCAN to begin</span>
+  </div>
+  <div class="sec-body">
+    <div class="port-grid" id="port-grid"></div>
+  </div>
+  <div class="legend">
+    <div class="li"><div class="ld" style="background:#001a3a;border:1px solid var(--blue)"></div>Scanning</div>
+    <div class="li"><div class="ld" style="background:#002a14;border:1px solid var(--green)"></div>Open (real)</div>
+    <div class="li"><div class="ld" style="background:#2a1400;border:1px solid var(--amber)"></div>Honeytrap deployed</div>
+    <div class="li"><div class="ld" style="background:#2a0000;border:1px solid var(--red)"></div>Honeytrap hit!</div>
+    <div class="li"><div class="ld" style="background:#0a1220;border:1px solid #0f2030"></div>Closed</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-head">
+    <span class="sec-title">System Terminal Log</span>
+    <span class="badge" id="log-badge">0 EVENTS</span>
+  </div>
+  <div class="sec-body">
+    <div class="terminal" id="terminal">
+      <div class="t-muted"># SecurePulse Mirage Engine — Waiting for initialization...</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-head">
+    <span class="sec-title">Attacker Simulation — Nmap Probe</span>
+    <span class="badge badge-red" id="nmap-badge">WAITING</span>
+    <button class="btn btn-red" id="atk-btn" onclick="startAttack()" disabled style="margin-left:auto">[ SIMULATE ATTACK ]</button>
+  </div>
+  <div class="sec-body" style="padding:0;">
+    <div style="padding:10px 14px 6px; font-size:10px; color:var(--muted)">Attacker machine running Nmap against victim IP 192.168.1.100 — all discovered "open" ports are Mirage honeypots</div>
+    <div style="overflow-x:auto;">
+      <table class="nmap-table" id="nmap-table">
+        <thead><tr>
+          <th>PORT / PROTO</th><th>STATE</th><th>SERVICE</th><th>VERSION (FAKE BANNER)</th><th>TRAP STATUS</th>
+        </tr></thead>
+        <tbody id="nmap-body">
+          <tr><td colspan="5" style="padding:20px;text-align:center;color:var(--muted);font-size:11px;">Deploy honeypot traps first, then run attack simulation</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-head">
+    <span class="sec-title">SSH Brute-Force Credential Capture</span>
+    <span class="badge badge-amber" id="cred-badge">IDLE</span>
+  </div>
+  <div class="atk-grid">
+    <div class="atk-half">
+      <div class="atk-label">ATTACKER TERMINAL — SSH BRUTE-FORCE ATTEMPT</div>
+      <div class="cred-block">
+        <div class="cred-row"><span class="cred-lbl">Target IP:</span><span class="cred-val">192.168.1.100</span></div>
+        <div class="cred-row"><span class="cred-lbl">Port:</span><span class="cred-val">22 (SSH Honeypot)</span></div>
+        <div class="cred-row"><span class="cred-lbl">Attacker IP:</span><span class="cred-val" style="color:var(--red)" id="atk-ip">—</span></div>
+        <div class="cred-row"><span class="cred-lbl">Username:</span><span class="cred-val" id="cv-user">—</span></div>
+        <div class="cred-row"><span class="cred-lbl">Password:</span><span class="cred-val" id="cv-pass">—</span></div>
+        <div id="cv-status" style="margin-top:8px;font-size:11px;color:var(--muted)">Waiting for attack to begin...</div>
+      </div>
+      <div id="capture-box"></div>
+    </div>
+    <div class="atk-half">
+      <div class="atk-label">ATTEMPT HISTORY LOG</div>
+      <div id="attempt-log" style="font-size:11px;line-height:2;color:var(--text)">
+        <div style="color:var(--muted)">No attempts yet. Run simulation.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-head">
+    <span class="sec-title">Alert Log — Captured Intrusions</span>
+    <span class="badge badge-red" id="alert-badge">NO ALERTS</span>
+  </div>
+  <div class="alert-head">
+    <span>TIME</span><span>ATTACKER IP</span><span>PORT</span><span>SERVICE</span><span>PAYLOAD / CREDENTIAL</span>
+  </div>
+  <div class="alert-list" id="alert-list">
+    <div class="empty-state" data-empty="1">No intrusion attempts detected. Deploy traps and run attack simulation.</div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const TOTAL = 65536, DISP = 512;
+const REAL_OPEN = [80, 443, 22, 3306, 8080, 5432];
+const TRAPS = {21:'FTP',23:'TELNET',25:'SMTP',110:'POP3',143:'IMAP',445:'SMB',3389:'RDP',5900:'VNC',8080:'HTTP-Alt',8443:'HTTPS-Alt',1433:'MSSQL',27017:'MongoDB',6379:'Redis'};
+const ATK_IP = '185.234.219.47';
+const FAKE_VER = {21:'vsftpd 3.0.3',22:'OpenSSH 8.2p1 Ubuntu',23:'Linux telnetd',25:'Postfix smtpd 3.4.13',80:'Apache httpd 2.4.41',110:'Dovecot pop3d',143:'Dovecot imapd',443:'nginx 1.18.0',445:'Samba smbd 4.6.2',3306:'MySQL 8.0.26',3389:'Microsoft RDP',5900:'VNC 5.3',8080:'Apache Tomcat 9.0',8443:'nginx 1.18.0',1433:'MSSQL 2019',27017:'MongoDB 4.4',6379:'Redis 6.2'};
+const SVC_NAME = {80:'HTTP',443:'HTTPS',22:'SSH',3306:'MySQL',8080:'HTTP-Alt',5432:'PostgreSQL'};
+
+let portData = {}, logCount = 0, alertCount = 0, scanDone = false;
+
+function tick() { document.getElementById('clock').textContent = new Date().toTimeString().slice(0,8); }
+setInterval(tick, 1000); tick();
+
+function initGrid() {
+  const g = document.getElementById('port-grid');
+  g.innerHTML = '';
+  for (let i = 0; i < DISP; i++) {
+    const p = Math.floor((i/DISP)*TOTAL);
+    const d = document.createElement('div');
+    d.className = 'pc'; d.id = 'pc'+i; d.title = 'Port '+p;
+    portData[i] = {port:p, state:'closed'};
+    g.appendChild(d);
+  }
+}
+
+function log(text, cls='') {
+  const t = document.getElementById('terminal');
+  const d = document.createElement('div');
+  d.className = cls; d.textContent = text;
+  t.appendChild(d); t.scrollTop = t.scrollHeight;
+  logCount++;
+  document.getElementById('log-badge').textContent = logCount + ' EVENTS';
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function startDemo() {
+  document.getElementById('main-btn').disabled = true;
+  document.getElementById('scan-badge').textContent = 'SCANNING';
+  initGrid();
+  log('[*] SecurePulse Mirage Engine initializing...', 't-cmd');
+  log('[*] Binding to host 192.168.1.100', 't-info');
+  await sleep(300);
+  log('[*] Starting full port inventory: 0 — 65535', 't-cmd');
+  let scanned = 0, openCount = 0;
+  const iv = setInterval(() => {
+    for (let b = 0; b < 20 && scanned < DISP; b++, scanned++) {
+      const idx = scanned, p = portData[idx].port, cell = document.getElementById('pc'+idx);
+      cell.classList.add('scanning');
+      setTimeout(() => {
+        cell.classList.remove('scanning');
+        if (REAL_OPEN.includes(p)) {
+          cell.classList.add('open'); portData[idx].state = 'open'; openCount++;
+          document.getElementById('s-open').textContent = openCount;
+          if (openCount <= 6) log('[OPEN] Port '+p+' — '+(SVC_NAME[p]||'SVC'), 't-cmd');
+        }
+      }, 100);
+    }
+    document.getElementById('s-scanned').textContent = Math.floor((scanned/DISP)*TOTAL).toLocaleString();
+    if (scanned >= DISP) {
+      clearInterval(iv);
+      document.getElementById('s-scanned').textContent = '65,536';
+      document.getElementById('scan-badge').textContent = 'DEPLOYING TRAPS';
+      log('[*] Scan complete. '+openCount+' real open ports found.', 't-info');
+      log('[*] Mirage Engine: Identifying free ports for trap deployment...', 't-cmd');
+      setTimeout(deployTraps, 500);
+    }
+  }, 80);
+}
+
+async function deployTraps() {
+  let tc = 0;
+  for (let i = 0; i < DISP; i++) {
+    const p = portData[i].port;
+    if (!REAL_OPEN.includes(p) && TRAPS[p]) {
+      portData[i].state = 'trap';
+      setTimeout(() => document.getElementById('pc'+i).classList.add('trap'), tc*25);
+      tc++;
+    }
+  }
+  let fc = 0;
+  for (let i = 0; i < DISP; i++) {
+    if (portData[i].state === 'closed') {
+      if (fc % 6 === 0) { setTimeout(() => { document.getElementById('pc'+i).classList.add('trap'); portData[i].state='gtrap'; }, fc*4); tc++; }
+      fc++;
+    }
+  }
+  await sleep(300);
+  for (const [p, svc] of Object.entries(TRAPS)) {
+    log('[TRAP] Port '+p+' — Fake '+svc+' banner active', 't-warn');
+    await sleep(55);
+  }
+  document.getElementById('s-traps').textContent = tc+'+';
+  log('[*] '+tc+'+ honeypot traps deployed across all free ports', 't-cmd');
+  log('[*] All traps reporting to SecurePulse alert backend at :5000/alert', 't-info');
+  log('[*] System protected. Awaiting attacker probes...', 't-cmd');
+  document.getElementById('scan-badge').textContent = 'PROTECTED';
+  document.getElementById('scan-note').textContent = tc+'+ traps active across 65,536 ports';
+  scanDone = true;
+  document.getElementById('atk-btn').disabled = false;
+  document.getElementById('nmap-badge').textContent = 'READY';
+}
+
+async function startAttack() {
+  document.getElementById('atk-btn').disabled = true;
+  document.getElementById('nmap-badge').textContent = 'SCANNING';
+  document.getElementById('cred-badge').textContent = 'ACTIVE';
+  document.getElementById('atk-ip').textContent = ATK_IP;
+  const tbody = document.getElementById('nmap-body');
+  tbody.innerHTML = '';
+  log('[ATTACKER] Nmap probe detected from '+ATK_IP, 't-danger');
+  const ports = [21,22,23,25,80,110,143,443,445,3306,3389,5900,8080,8443,1433,27017,6379];
+  for (const p of ports) {
+    await sleep(110);
+    const svc = TRAPS[p]||(SVC_NAME[p]||'unknown');
+    const ver = FAKE_VER[p]||'unknown';
+    const isTrap = !REAL_OPEN.includes(p);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="col-port">${p}/tcp</td><td class="col-state">open</td><td class="col-svc">${svc}</td><td class="col-ver">${ver}</td><td style="font-size:10px;color:${isTrap?'var(--amber)':'var(--blue)'}">${isTrap?'HONEYPOT — capturing attacker':'Real service'}</td>`;
+    tbody.appendChild(tr);
+  }
+  document.getElementById('nmap-badge').textContent = 'COMPLETE — '+ports.length+' PORTS';
+  log('[ATTACKER] Nmap found '+ports.length+' "open" ports (all honeypots)', 't-danger');
+  await sleep(600);
+  await simulateBrute();
+}
+
+async function simulateBrute() {
+  const attempts = [
+    ['root','password'],['admin','admin123'],['user','123456'],['root','toor'],['admin','password1']
+  ];
+  const attemptLog = document.getElementById('attempt-log');
+  attemptLog.innerHTML = '';
+  for (const [u,p] of attempts) {
+    document.getElementById('cv-status').className = 'cred-status cred-trying';
+    document.getElementById('cv-status').textContent = 'Attempting SSH login...';
+    await typeIn('cv-user', u);
+    await typeIn('cv-pass', p);
+    await sleep(350);
+    document.getElementById('cv-status').className = 'cred-status cred-fail';
+    document.getElementById('cv-status').textContent = 'Authentication failed — honeypot banner sent to attacker';
+    const now = new Date().toTimeString().slice(0,8);
+    const d = document.createElement('div');
+    d.innerHTML = `<span style="color:var(--muted)">${now}</span> <span style="color:var(--red)">${ATK_IP}</span> <span style="color:var(--amber)">user:${u}</span> <span style="color:#664444">pass:${p}</span> <span style="color:var(--muted)">— BLOCKED</span>`;
+    attemptLog.appendChild(d);
+    addAlert(now, ATK_IP, '22', 'SSH', `user=${u} pass=${p}`);
+    markHit(22);
+    log('[!!!] SSH trap hit — '+ATK_IP+' tried user:'+u+' pass:'+p, 't-danger');
+    await sleep(300);
+  }
+  await sleep(400);
+  showCapture();
+  document.getElementById('cred-badge').textContent = 'CAPTURED';
+}
+
+async function typeIn(id, text) {
+  const el = document.getElementById(id);
+  el.textContent = ''; el.classList.add('active');
+  for (const c of text) { el.textContent += c; await sleep(55); }
+  el.classList.remove('active');
+}
+
+function markHit(port) {
+  for (let i = 0; i < DISP; i++) {
+    if (portData[i].port === port) {
+      const c = document.getElementById('pc'+i);
+      c.classList.remove('trap','open'); c.classList.add('hit');
+    }
+  }
+}
+
+function addAlert(time, ip, port, svc, payload) {
+  alertCount++;
+  document.getElementById('s-alerts').textContent = alertCount;
+  document.getElementById('alert-badge').textContent = alertCount + ' ALERT'+(alertCount>1?'S':'');
+  const list = document.getElementById('alert-list');
+  const empty = list.querySelector('[data-empty]');
+  if (empty) empty.remove();
+  const row = document.createElement('div');
+  row.className = 'alert-row';
+  row.innerHTML = `<span class="a-time">${time}</span><span class="a-ip">${ip}</span><span class="a-port">:${port}</span><span class="a-svc">${svc}</span><span class="a-payload">${payload}</span>`;
+  list.insertBefore(row, list.firstChild);
+}
+
+function showCapture() {
+  document.getElementById('capture-box').innerHTML = `
+    <div class="capture-box">
+      <div class="capture-label">ATTACKER IP CAPTURED &amp; LOGGED</div>
+      <div class="capture-ip">${ATK_IP}</div>
+      <div class="capture-sub">SAVED TO: /logs/securepulse_alerts.db — MIRAGE ENGINE</div>
+    </div>`;
+  log('[*] Honeypot defense complete — attacker '+ATK_IP+' fully exposed', 't-cmd');
+}
+
+initGrid();
+</script>
