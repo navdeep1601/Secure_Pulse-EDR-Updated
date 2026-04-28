@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SecurePulse // Mirage Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>[ SECUREPULSE // MIRAGE_ENGINE ]</h1>
+            <div id="status-indicator">SYSTEM STATUS: <span class="online">ACTIVE</span></div>
+        </header>
+
+        <section class="log-container">
+            <h3>LIVE INTRUSION TELEMETRY</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Attacker IP</th>
+                        <th>Port</th>
+                        <th>Service</th>
+                        <th>Payload / Intent</th>
+                    </tr>
+                </thead>
+                <tbody id="eventBody">
+                    </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
